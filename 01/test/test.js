@@ -38,8 +38,34 @@ describe('Day 1: The Tyranny of the Rocket Equation', () => {
       const totalFuel = GetTotalFuel(massIput);
       assert.equal(totalFuel, 3456641);
     });
-
   });
+
+  describe('Part two - More fuel', () => {    
+    it('should calculate a simple module fuel', () => {
+      const MODULE_FUEL = 14;
+      const module = new ModuleExplorer.Builder()
+      .withMass(MODULE_FUEL)
+      .build();
+      assert.equal(module.mass, MODULE_FUEL);
+      assert.equal(GetFuel(module), 2);
+    });
+
+    it('should calculate fuel of bigger mass', () => {
+      const MODULE_FUEL = 1969;
+      assert.equal(GetFuelAdder(MODULE_FUEL), 966);
+    });
+
+    it('should calculate fuel of a complex mass', () => {
+      const MODULE_FUEL = 100756;
+      assert.equal(GetFuelAdder(MODULE_FUEL), 50346);
+    });
+
+    it('should calculate all the fuel requirements', () => {
+      const allFuel = GetAllFuelRequirement(massIput);
+      console.log('allFuel', allFuel);
+    });
+  });
+
 });
 
 class ModuleExplorer {
@@ -76,6 +102,21 @@ function GetTotalFuel(massIput) {
     const module = new ModuleExplorer.Builder()
     .withMass(mass)
     .build();
-    return GetFuel(module) + previousFuel
+    return GetFuel(module) + previousFuel;
+  }, 0);
+}
+
+function GetFuelAdder(baseMass, fuelAdder = 0) {
+  const module = new ModuleExplorer.Builder().withMass(baseMass).build();
+  const fuel = GetFuel(module);
+  if (fuel <= 0) return fuelAdder;
+  const totalFuel = fuelAdder + fuel;
+  return GetFuelAdder(fuel, totalFuel);
+}
+
+function GetAllFuelRequirement(massIput) {
+  return massIput.reduce((previousFuel, mass) => {
+    const fuel = GetFuelAdder(mass);
+    return previousFuel + fuel;
   }, 0);
 }
