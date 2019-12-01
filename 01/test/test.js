@@ -62,7 +62,7 @@ describe('Day 1: The Tyranny of the Rocket Equation', () => {
 
     it('should calculate all the fuel requirements', () => {
       const allFuel = GetAllFuelRequirement(massIput);
-      console.log('allFuel', allFuel);
+      assert.equal(allFuel, 5182078);
     });
   });
 
