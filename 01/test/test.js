@@ -14,7 +14,6 @@ describe('Day 1: The Tyranny of the Rocket Equation', () => {
       const module = new ModuleExplorer.Builder()
       .withMass(122)
       .build();
-      assert.equal(module.name, 'Nogg-Aholic explorer');
       assert.equal(module.mass, 122);
     });
 
@@ -22,9 +21,24 @@ describe('Day 1: The Tyranny of the Rocket Equation', () => {
       const module = new ModuleExplorer.Builder()
       .withMass(massIput[0])
       .build();
-      assert.equal(module.name, 'Nogg-Aholic explorer');
       assert.equal(module.mass, 119341);
     });
+  });
+
+  describe('Module fuel', () => {    
+    it('should retrieve the correct fuel', () => {
+      const module = new ModuleExplorer.Builder()
+      .withMass(massIput[0])
+      .build();
+      assert.equal(module.mass, 119341);
+      assert.equal(GetFuel(module), 39778);
+    });
+
+    it('should calculate all the necessary fuel', () => {
+      const totalFuel = GetTotalFuel(massIput);
+      assert.equal(totalFuel, 3456641);
+    });
+
   });
 });
 
@@ -50,4 +64,18 @@ class ModuleExplorer {
      }
      return Builder;
   }
+}
+
+function GetFuel(ModuleExplorer) {
+  if (!ModuleExplorer.mass) return;
+  return Math.floor(ModuleExplorer.mass / 3) - 2;
+}
+
+function GetTotalFuel(massIput) {
+  return massIput.reduce((previousFuel, mass) => {
+    const module = new ModuleExplorer.Builder()
+    .withMass(mass)
+    .build();
+    return GetFuel(module) + previousFuel
+  }, 0);
 }
